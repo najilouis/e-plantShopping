@@ -3,9 +3,11 @@ import './ProductList.css'
 import CartItem from './CartItem';
 import { addItem } from './CartSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import UsersList from './components/UsersList';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
-    const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [showPlants, setShowPlants] = useState(true); // State to control the visibility of the About Us page
+    const [showUsers, setShowUsers] = useState(false);
     const [addedToCart, setAddedToCart] = useState({});
 
     const cart = useSelector((state) => state.cart);
@@ -255,6 +257,7 @@ function ProductList({ onHomeClick }) {
         e.preventDefault();
         setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
         setShowCart(false); // Hide the cart when navigating to About Us
+        setShowUsers(false);
     };
 
     const handleAddToCart = (product) => {
@@ -271,10 +274,15 @@ function ProductList({ onHomeClick }) {
     };
 
     const calculateTotalQuantity = () => {
-
         return cart.items ? cart.items.reduce((total, item) => total + item.quantity, 0) : 0;
-
     };
+
+    const handleUsersClick = (e) => {
+        e.preventDefault();
+        setShowUsers(true);
+        setShowCart(false);
+        setShowPlants(false);
+    }
 
     return (
         <div>
@@ -293,6 +301,8 @@ function ProductList({ onHomeClick }) {
                 </div>
                 <div style={styleObjUl}>
                     <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
+
+                    <div> <a href="#" onClick={(e) => handleUsersClick(e)} style={styleA}>Users</a></div>
                     <div>
                         <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
                             <h1 className='cart'>
@@ -308,7 +318,7 @@ function ProductList({ onHomeClick }) {
                     </div>
                 </div>
             </div>
-            {!showCart ? (
+            {(showPlants && !showCart && !showUsers) && (
                 <div className="product-grid">
                     {plantsArray.map((category, index) => ( // Loop through each category in plantsArray
                         <div key={index}> {/* Unique key for each category div */}
@@ -341,7 +351,12 @@ function ProductList({ onHomeClick }) {
                     ))}
 
                 </div>
-            ) : (
+            )}
+            {(showUsers && !showCart && !showPlants) && (
+                <UsersList />
+            )}
+
+            {(showCart && !showPlants && !showUsers) && (
                 <CartItem onContinueShopping={handleContinueShopping} />
             )}
         </div>
