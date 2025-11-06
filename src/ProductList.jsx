@@ -4,10 +4,12 @@ import CartItem from './CartItem';
 import { addItem } from './CartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import UsersList from './components/UsersList';
+import PostsList from './components/PostsList';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(true); // State to control the visibility of the About Us page
     const [showUsers, setShowUsers] = useState(false);
+    const [showPosts, setShowPosts] = useState(false);
     const [addedToCart, setAddedToCart] = useState({});
 
     const cart = useSelector((state) => state.cart);
@@ -244,6 +246,13 @@ function ProductList({ onHomeClick }) {
         textDecoration: 'none',
     }
 
+    const setActivePage = (page) => {
+        setShowPlants(page === 'plants');
+        setShowUsers(page === 'users');
+        setShowCart(page === 'cart');
+        setShowPosts(page === 'posts');
+    }
+
     const handleHomeClick = (e) => {
         e.preventDefault();
         onHomeClick();
@@ -251,13 +260,16 @@ function ProductList({ onHomeClick }) {
 
     const handleCartClick = (e) => {
         e.preventDefault();
-        setShowCart(true); // Set showCart to true when cart icon is clicked
+        // setShowCart(true); // Set showCart to true when cart icon is clicked
+        setActivePage('cart');
     };
     const handlePlantsClick = (e) => {
         e.preventDefault();
-        setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
-        setShowCart(false); // Hide the cart when navigating to About Us
-        setShowUsers(false);
+        // setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
+        // setShowCart(false); // Hide the cart when navigating to About Us
+        // setShowUsers(false);
+        // setShowPosts(false);
+        setActivePage('plants');
     };
 
     const handleAddToCart = (product) => {
@@ -279,9 +291,15 @@ function ProductList({ onHomeClick }) {
 
     const handleUsersClick = (e) => {
         e.preventDefault();
-        setShowUsers(true);
-        setShowCart(false);
-        setShowPlants(false);
+        // setShowUsers(true);
+        // setShowCart(false);
+        // setShowPlants(false);
+        setActivePage('users');
+    }
+
+    const handlePostsClick = (e) => {
+        e.preventDefault();
+        setActivePage('posts');
     }
 
     return (
@@ -303,6 +321,8 @@ function ProductList({ onHomeClick }) {
                     <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
 
                     <div> <a href="#" onClick={(e) => handleUsersClick(e)} style={styleA}>Users</a></div>
+
+                    <div> <a href="#" onClick={(e) => handlePostsClick(e)} style={styleA}>Posts</a></div>
                     <div>
                         <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
                             <h1 className='cart'>
@@ -318,7 +338,7 @@ function ProductList({ onHomeClick }) {
                     </div>
                 </div>
             </div>
-            {(showPlants && !showCart && !showUsers) && (
+            {showPlants && (
                 <div className="product-grid">
                     {plantsArray.map((category, index) => ( // Loop through each category in plantsArray
                         <div key={index}> {/* Unique key for each category div */}
@@ -352,11 +372,15 @@ function ProductList({ onHomeClick }) {
 
                 </div>
             )}
-            {(showUsers && !showCart && !showPlants) && (
+            {showUsers && (
                 <UsersList />
             )}
 
-            {(showCart && !showPlants && !showUsers) && (
+            {showPosts && (
+                <PostsList />
+            )}
+
+            {showCart && (
                 <CartItem onContinueShopping={handleContinueShopping} />
             )}
         </div>
